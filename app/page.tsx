@@ -23,16 +23,16 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section
-        className="relative h-screen flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/hero-image.jpg')" }}
-      >
-        {/* Overlay for better readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+  className="relative h-screen flex items-center justify-center bg-cover bg-center"
+  style={{ backgroundImage: "url('/hero-image.jpg')" }}
+>
+  {/* Light overlay to ensure readability */}
+  <div className="absolute inset-0 bg-black bg-opacity-30"></div>
 
-        <h1 className="relative z-10 text-white text-4xl md:text-6xl font-bold text-center px-4 py-2">
-          Discover Elegant Jewelry
-        </h1>
-      </section>
+  <h1 className="relative z-10 text-white text-4xl md:text-6xl font-bold text-center px-4 py-2">
+    Discover Elegant Jewelry
+  </h1>
+</section>
 
       {/* Product Listing */}
       <section className="mt-8 max-w-6xl mx-auto px-6">
