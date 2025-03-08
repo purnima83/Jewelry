@@ -38,8 +38,8 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
               >
                 {item}
-            </Link>
-          </li>
+              </Link>
+            </li>
           ))}
         </ul>
       </div>
