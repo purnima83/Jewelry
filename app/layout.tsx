@@ -24,10 +24,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <head />
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <Navbar />
+        {/* Navbar */}
+        <div className="sticky top-0 z-50 bg-white shadow-md">
+          <Navbar />
+        </div>
+
+        {/* Main Content */}
         <main className="flex-grow">{children}</main>
+
+        {/* Footer */}
         <Footer />
       </body>
     </html>
