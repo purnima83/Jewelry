@@ -30,8 +30,8 @@ export default function Home() {
     backgroundColor: "rgba(0, 0, 0, 0.2)" // Dark overlay for better contrast
   }}
 >
-<h1 className="text-white text-4xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded">
-Discover Elegant Jewelry
+  <h1 className="text-white text-4xl font-bold">
+    Discover Elegant Jewelry
   </h1>
 </section>
 {/* Product Listing */}
