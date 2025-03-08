@@ -1,56 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+}
+
 export default function Home() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("https://fakestoreapi.com/products/category/jewelery");
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Failed to fetch products", error);
-      }
-    }
-    fetchProducts();
+    fetch("https://fakestoreapi.com/products/category/jewelery")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <div>
       {/* Hero Section */}
-      <header className="relative h-[500px] flex items-center justify-center text-white">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero-image.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <h1 className="text-5xl font-bold">Discover Timeless Elegance</h1>
-        </div>
-      </header>
+      <section className="relative h-64 flex items-center justify-center bg-cover bg-center" 
+        style={{ backgroundImage: "url('/hero-image.jpg')" }}>
+        <h1 className="text-white text-4xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded">
+          Discover Elegant Jewelry
+        </h1>
+      </section>
 
-      {/* Products */}
-      <section className="py-12 px-6">
-        <h2 className="text-3xl font-semibold text-center mb-8">Our Best Sellers</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <Image src={product.image} alt={product.title} width={300} height={300} className="w-full h-60 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-lg font-medium">{product.title}</h3>
-                  <p className="text-gray-600">${product.price.toFixed(2)}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">Loading products...</p>
-          )}
+      {/* Product Listing */}
+      <section className="mt-8">
+        <h2 className="text-2xl font-bold text-center mb-4">Featured Jewelry</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <div key={product.id} className="border rounded-lg p-4 shadow-md">
+              <Image src={product.image} alt={product.title} width={200} height={200} className="mx-auto"/>
+              <h3 className="text-lg font-semibold mt-2">{product.title}</h3>
+              <p className="text-gray-700">${product.price}</p>
+              <button className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                View Details
+              </button>
+            </div>
+          ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }
