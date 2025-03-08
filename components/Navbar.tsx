@@ -18,7 +18,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-gray-800 text-2xl focus:outline-none"
+          className="md:hidden text-gray-800 text-2xl focus:outline-none transition-transform duration-300"
           aria-label="Toggle menu"
         >
           {menuOpen ? "✖" : "☰"}
@@ -26,30 +26,21 @@ export default function Navbar() {
 
         {/* Menu Items */}
         <ul
-          className={`absolute md:relative top-full left-0 w-full bg-white md:bg-transparent md:flex md:space-x-6 transition-all duration-300 ease-in-out ${
-            menuOpen ? "block" : "hidden"
-          } md:block`}
+          className={`absolute md:relative top-16 md:top-auto left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none md:flex md:space-x-6 transition-all duration-300 ease-in-out ${
+            menuOpen ? "block opacity-100" : "hidden opacity-0 md:opacity-100"
+          }`}
         >
-          <li>
-            <Link href="/" className="block px-4 py-2 text-gray-600 hover:text-gray-800">
-              Home
+          {["Home", "Shop", "About", "Contact"].map((item, index) => (
+            <li key={index}>
+              <Link
+                href={`/${item.toLowerCase()}`}
+                className="block px-6 py-3 text-gray-600 hover:text-gray-800"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item}
             </Link>
           </li>
-          <li>
-            <Link href="/shop" className="block px-4 py-2 text-gray-600 hover:text-gray-800">
-              Shop
-            </Link>
-          </li>
-          <li>
-            <Link href="/about" className="block px-4 py-2 text-gray-600 hover:text-gray-800">
-              About
-            </Link>
-          </li>
-          <li>
-            <Link href="/contact" className="block px-4 py-2 text-gray-600 hover:text-gray-800">
-              Contact
-            </Link>
-          </li>
+          ))}
         </ul>
       </div>
     </nav>
