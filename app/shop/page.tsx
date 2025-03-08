@@ -15,8 +15,9 @@ interface Product {
 export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<string[]>(["all", "jewelery"]); // Hardcoded for reliability
+  const [categories, setCategories] = useState<string[]>(["all", "jewelery"]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products/category/jewelery")
@@ -36,6 +37,14 @@ export default function Shop() {
     }
   };
 
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
+    const sortedProducts = [...filteredProducts].sort((a, b) =>
+      order === "asc" ? a.price - b.price : b.price - a.price
+    );
+    setFilteredProducts(sortedProducts);
+  };
+
   return (
     <div className="container mx-auto px-6 py-8">
       {/* Filter Options */}
@@ -48,11 +57,31 @@ export default function Shop() {
               selectedCategory === category
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-800"
-            } transition duration-300 ease-in-out`}
+            }`}
           >
             {category.charAt(0).toUpperCase() + category.slice(1)}
           </button>
         ))}
+      </div>
+
+      {/* Sorting Options */}
+      <div className="flex space-x-4 mb-6">
+        <button
+          onClick={() => handleSort("asc")}
+          className={`px-4 py-2 rounded ${
+            sortOrder === "asc" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
+        >
+          Price: Low to High
+        </button>
+        <button
+          onClick={() => handleSort("desc")}
+          className={`px-4 py-2 rounded ${
+            sortOrder === "desc" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800"
+          }`}
+        >
+          Price: High to Low
+        </button>
       </div>
 
       {/* Product Grid */}
