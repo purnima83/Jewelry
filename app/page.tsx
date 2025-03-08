@@ -22,17 +22,19 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section
-  className="relative h-screen flex items-center justify-center bg-cover bg-center text-white"
-  style={{ backgroundImage: "url('/hero-image.jpg')" }}
+      <section 
+  className="relative h-64 flex items-center justify-center bg-cover bg-center"
+  style={{ 
+    backgroundImage: "url('/hero-image.jpg')",
+    backgroundBlendMode: "overlay",
+    backgroundColor: "rgba(0, 0, 0, 0.2)" // Dark overlay for better contrast
+  }}
 >
-  <h1 className="text-4xl md:text-6xl font-bold text-center px-4 py-2 shadow-lg">
-    Discover Elegant Jewelry
+<h1 className="text-white text-4xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded">
+Discover Elegant Jewelry
   </h1>
 </section>
-
-
-      {/* Product Listing */}
+{/* Product Listing */}
       <section className="mt-8 max-w-6xl mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-6">Featured Jewelry</h2>
 
