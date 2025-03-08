@@ -1,9 +1,12 @@
 "use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
+import { useCart } from "@/context/CartContext"; // ✅ Import Cart Context
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cart } = useCart(); // ✅ Get cart data
 
   return (
     <nav className="bg-white shadow-md">
@@ -41,6 +44,18 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+
+          {/* Cart Link with Counter */}
+          <li>
+            <Link href="/cart" className="relative block px-6 py-3 text-gray-600 hover:text-gray-800">
+              Cart 🛒
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {cart.length}
+                </span>
+              )}
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>
