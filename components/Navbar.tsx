@@ -2,20 +2,20 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useCart } from "@/context/CartContext"; // ✅ Import Cart Context
+import { useCart } from "@/context/CartContext";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { cart } = useCart(); // ✅ Get cart data
+  const { cart } = useCart();
+  const { data: session } = useSession();
 
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/">
-          <span className="text-2xl font-bold text-gray-800 cursor-pointer">
-            Jewelry Store
-          </span>
+        <Link href="/" className="text-2xl font-bold text-gray-800">
+          Jewelry Store
         </Link>
 
         {/* Mobile Menu Button */}
@@ -33,6 +33,7 @@ export default function Navbar() {
             menuOpen ? "block opacity-100" : "hidden opacity-0 md:opacity-100"
           }`}
         >
+          {/* Navigation Links */}
           {["Home", "Shop", "About", "Contact"].map((item, index) => (
             <li key={index}>
               <Link
@@ -55,6 +56,32 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
+          </li>
+
+          {/* Authentication & Profile */}
+          <li className="flex items-center px-6 py-3">
+            {session ? (
+              <>
+                {/* ✅ Profile Link */}
+                <Link href="/profile" className="text-gray-800 font-semibold hover:underline">
+                  Profile 👤
+                </Link>
+
+                <button
+                  onClick={() => signOut()}
+                  className="ml-3 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => signIn()}
+                className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 w-full text-center"
+              >
+                Login
+              </button>
+            )}
           </li>
         </ul>
       </div>

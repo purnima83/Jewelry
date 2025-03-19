@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { CartProvider } from "@/context/CartContext"; // ✅ Added CartProvider
+import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext"; // ✅ Import AuthProvider
+import SessionProvider from "@/context/SessionProvider"; // ✅ Import SessionProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,18 +28,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <CartProvider> {/* ✅ Wrap the app inside CartProvider */}
-          {/* Navbar */}
-          <div className="sticky top-0 z-50 bg-white shadow-md">
-            <Navbar />
-          </div>
-
-          {/* Main Content */}
-          <main className="flex-grow">{children}</main>
-
-          {/* Footer */}
-          <Footer />
-        </CartProvider>
+        <SessionProvider>
+          <AuthProvider> {/* ✅ Wrap everything inside AuthProvider */}
+            <CartProvider>
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </CartProvider>
+          </AuthProvider>
+        </SessionProvider>
       </body>
     </html>
   );
