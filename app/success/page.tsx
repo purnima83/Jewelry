@@ -4,20 +4,38 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
+import Image from "next/image";
+import Link from "next/link";
+
+// ✅ Define Order Type Instead of `any`
+interface OrderItem {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
+interface Order {
+  _id: string;
+  items: OrderItem[];
+  total: number;
+  status: string;
+}
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const sessionId = searchParams.get("session_id");
   const { clearCart } = useCart();
-  const { data: session, status } = useSession(); // ✅ Use NextAuth session
+  const { data: session, status } = useSession();
 
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Redirect unauthenticated users only when session is confirmed as unauthenticated
+  // ✅ Redirect unauthenticated users AFTER session is determined
   useEffect(() => {
-    if (status === "loading") return; // Wait until session is determined
+    if (status === "loading") return; // Wait for session check
     if (!session) {
       router.push("/login");
     }
@@ -34,7 +52,7 @@ export default function SuccessPage() {
           setOrder(null);
         } else {
           setOrder(data);
-          clearCart(); // ✅ Clear cart only after order is confirmed
+          clearCart(); // ✅ Clear cart only after successful order fetch
         }
         setLoading(false);
       })
@@ -51,9 +69,9 @@ export default function SuccessPage() {
       <div className="text-center py-10">
         <h1 className="text-3xl font-bold text-red-600">No Order Found</h1>
         <p className="text-gray-700 mt-4">It looks like you haven't placed an order.</p>
-        <a href="/" className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        <Link href="/" className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
           Continue Shopping
-        </a>
+        </Link>
       </div>
     );
   }
@@ -71,10 +89,10 @@ export default function SuccessPage() {
           <h3 className="text-lg font-semibold mb-2">Order Summary</h3>
           <p className="text-gray-600 mb-4">Order ID: {order._id}</p>
 
-          {Array.isArray(order.items) && order.items.length > 0 ? (
-            order.items.map((item: any, index: number) => (
+          {order.items.length > 0 ? (
+            order.items.map((item, index) => (
               <div key={index} className="border p-3 rounded-lg flex items-center">
-                <img src={item.image} alt={item.title} className="w-16 h-16 rounded" />
+                <Image src={item.image} alt={item.title} width={64} height={64} className="rounded" />
                 <div className="ml-4">
                   <h4 className="font-medium">{item.title}</h4>
                   <p className="text-sm text-gray-600">${item.price} x {item.quantity}</p>
@@ -91,9 +109,9 @@ export default function SuccessPage() {
       )}
 
       <div className="text-center mt-6">
-        <a href="/" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        <Link href="/" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
           Continue Shopping
-        </a>
+        </Link>
       </div>
     </div>
   );
