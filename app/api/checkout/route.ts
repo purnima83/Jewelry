@@ -7,9 +7,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
 });
 
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
 export async function POST(req: Request) {
   try {
-    const { cart, address, email } = await req.json();
+    const { cart, address, email }: { cart: CartItem[]; address: string; email: string } = await req.json();
 
     if (!cart || cart.length === 0 || !address || !email) {
       console.error("❌ Missing required fields");
@@ -23,7 +31,7 @@ export async function POST(req: Request) {
     // ✅ Create Stripe session first
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: cart.map((item: any) => ({
+      line_items: cart.map((item) => ({
         price_data: {
           currency: "usd",
           product_data: { name: item.title, images: [item.image] },
@@ -32,7 +40,7 @@ export async function POST(req: Request) {
         quantity: item.quantity,
       })),
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id=${encodeURIComponent("{CHECKOUT_SESSION_ID}")}`,
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/checkout`,
       customer_email: email,
     });
@@ -43,7 +51,7 @@ export async function POST(req: Request) {
     const newOrder = await Order.create({
       userEmail: email,
       items: cart,
-      total: cart.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0),
+      total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
       address,
       status: "pending",
       sessionId: session.id,
