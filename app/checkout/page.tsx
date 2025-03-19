@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -22,15 +21,8 @@ export default function CheckoutPage() {
     }
   }, [session]);
 
-  // Redirect if user is not logged in
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
   const handleCheckout = async () => {
-    if (!name || !email || !address) {
+    if (!email || !address) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -47,13 +39,12 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (response.ok && data.url) {
-        clearCart(); // Clear the cart before redirecting
-        router.push(data.url); // Redirect to Stripe Checkout
+        clearCart();
+        router.push(data.url);
       } else {
         alert(data.error || "Something went wrong.");
       }
     } catch (error) {
-      console.error("Checkout Error:", error);
       alert("Failed to process checkout.");
     } finally {
       setLoading(false);
@@ -66,7 +57,10 @@ export default function CheckoutPage() {
 
       {cart.length === 0 ? (
         <p className="text-center text-gray-500">
-          Your cart is empty. <Link href="/shop" className="text-blue-500 underline">Shop Now</Link>
+          Your cart is empty.{" "}
+          <a href="/shop" className="text-blue-500 underline">
+            Shop Now
+          </a>
         </p>
       ) : (
         <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -83,8 +77,8 @@ export default function CheckoutPage() {
             type="email"
             placeholder="Email"
             value={email}
+            className="w-full border p-2 rounded mb-2 bg-gray-100"
             readOnly
-            className="w-full border p-2 rounded mb-2 bg-gray-100 cursor-not-allowed"
           />
           <input
             type="text"
