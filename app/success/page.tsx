@@ -18,6 +18,7 @@ export default function SuccessPage() {
 
   useEffect(() => {
     if (status === "loading") return;
+
     if (!session) {
       router.push("/login");
     }
@@ -26,21 +27,26 @@ export default function SuccessPage() {
   useEffect(() => {
     if (!sessionId) return;
 
-    fetch(`/api/success?session_id=${sessionId}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchOrder = async () => {
+      try {
+        const response = await fetch(`/api/success?session_id=${sessionId}`);
+        const data = await response.json();
+
         if (data.error) {
           console.error("🚨 Order Fetch Error:", data.error);
           setOrder(null);
         } else {
           setOrder(data);
-          clearCart();
+          if (clearCart) clearCart(); // Ensure clearCart exists before calling
         }
+      } catch (error) {
+        console.error("🚨 API Fetch Error:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchOrder();
   }, [sessionId, clearCart]);
 
   if (status === "loading") return null;
